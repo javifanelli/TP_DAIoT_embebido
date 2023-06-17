@@ -10,6 +10,11 @@ This example connects to the broker test.mosquitto.org using ssl transport with 
 
 It uses ESP-MQTT library which implements mqtt client to connect to mqtt broker.
 
+Utilizar estos enlaces
+https://www.emqx.com/en/blog/enable-two-way-ssl-for-emqx
+
+https://www.emqx.com/en/blog/emqx-server-ssl-tls-secure-connection-configuration-guide
+
 ## How to use example
 
 ### Hardware Required
