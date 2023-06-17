@@ -11,13 +11,14 @@ extern const uint8_t server_cert_pem_end[] asm("_binary_ca_pem_end");
 static char MAC[18];
 static int8_t rssi = 0;
 static char buffer_mqtt[150];
+static char buffer_in[150];
 static const char *TAG = "habitacion";
 static esp_mqtt_client_handle_t client;
 static char TOPIC[50];
-
+bool mqtt_client_connected = false;
 
 void build_topic(void) {
-    sprintf(TOPIC, "/home/%s/temp", TAG);
+    sprintf(TOPIC, "/home/%s/data", TAG);
 }
 
 static void log_error_if_nonzero(const char *message, int error_code)
@@ -38,8 +39,9 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
 
     switch ((esp_mqtt_event_id_t)event_id) {
     case MQTT_EVENT_CONNECTED:
+        mqtt_client_connected = true;
         ESP_LOGI(TAG, "MQTT_EVENT_CONNECTED");
-        msg_id = esp_mqtt_client_subscribe(client, "/home/temp", 0);
+        msg_id = esp_mqtt_client_subscribe(client, TOPIC, 0);
         ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id);
         break;
 
@@ -63,6 +65,7 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
         ESP_LOGI(TAG, "MQTT_EVENT_DATA");
         printf("TOPIC=%.*s\r\n", event->topic_len, event->topic);
         printf("DATA=%.*s\r\n", event->data_len, event->data);
+        buffer_in = event->data;
         break;
     
     case MQTT_EVENT_ERROR:
@@ -101,8 +104,7 @@ static void mqtt_app_start(void)
 }
 
 void mqtt_send_info (void * parm)
-{
-    
+{    
     wifi_ap_record_t ap_info;
     buffer_mqtt[0] = 0;
     char RSSI_CHAR[10];

@@ -6,7 +6,11 @@
     "task.h": "c",
     "sockets.h": "c",
     "*.inc": "c",
-    "system_error": "c"
+    "system_error": "c",
+    "sntp_time.h": "c",
+    "array": "c",
+    "string": "c",
+    "string_view": "c"
   },
   "idf.openOcdConfigs": [
     "board/esp32-bridge.cfg"

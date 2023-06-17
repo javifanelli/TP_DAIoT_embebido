@@ -38,7 +38,8 @@ void app_main(void)
     ESP_ERROR_CHECK(example_connect());
     
     initialize_sntp();
-    
+    /* while (!time_sinc_ok) vTaskDelay(100 * 1); */
+
     mqtt_app_start();
     
     xTaskCreate(mqtt_send_info, "mqtt_send_info", 4096 * 8, NULL, 3, NULL);
