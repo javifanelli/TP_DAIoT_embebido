@@ -13,7 +13,44 @@ It uses ESP-MQTT library which implements mqtt client to connect to mqtt broker.
 Utilizar estos enlaces
 https://www.emqx.com/en/blog/enable-two-way-ssl-for-emqx
 
-https://www.emqx.com/en/blog/emqx-server-ssl-tls-secure-connection-configuration-guide
+## Creacion de certificados
+
+### Servidor
+
+* sudo openssl genrsa -out ca.key 2048
+* sudo openssl req -x509 -new -nodes -key ca.key -sha256 -days 3650 -out ca.pem
+* sudo openssl genrsa -out server.key 2048
+* crear openssl.cnf
+[req]
+default_bits  = 2048
+distinguished_name = req_distinguished_name
+req_extensions = req_ext
+x509_extensions = v3_req
+prompt = no
+[req_distinguished_name]
+countryName = AR
+stateOrProvinceName = bsas
+localityName = berazategui
+organizationName = ceiot
+commonName = server
+[req_ext]
+subjectAltName = @alt_names
+[v3_req]
+subjectAltName = @alt_names
+[alt_names]
+IP.1 = 192.168.0.70
+DNS.1 = 192.168.0.70
+
+* sudo openssl req -new -key ./server.key -config openssl.cnf -out server.csr
+* sudo openssl x509 -req -in ./server.csr -CA ca.pem -CAkey ca.key -CAcreateserial -out server.pem -days 3650 -sha256 -extensions v3_req -extfile openssl.cnf
+
+### Cliente
+
+* sudo openssl genrsa -out client.key 2048
+* sudo openssl req -new -key client.key -out client.csr -subj "/C=AR/ST=bsas/L=berazategui/O=ceiot/CN=client"
+* sudo openssl x509 -req -days 3650 -in client.csr -CA ca.pem -CAkey ca.key -CAcreateserial -out client.pem
+
+
 
 ## How to use example
 
