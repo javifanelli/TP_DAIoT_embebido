@@ -5,7 +5,7 @@ extern const uint8_t client_key_pem_end[] asm("_binary_client_key_end");
 extern const uint8_t server_cert_pem_start[] asm("_binary_ca_pem_start");
 extern const uint8_t server_cert_pem_end[] asm("_binary_ca_pem_end");
 
-#define BROKER_URI "mqtts://192.168.0.60"
+#define BROKER_URI "mqtts://192.168.0.70"
 #define seconds 30 // Segundos de delay en actualizar temperatura
 
 static char MAC[18];
@@ -65,7 +65,7 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
         ESP_LOGI(TAG, "MQTT_EVENT_DATA");
         printf("TOPIC=%.*s\r\n", event->topic_len, event->topic);
         printf("DATA=%.*s\r\n", event->data_len, event->data);
-        buffer_in = event->data;
+        /* buffer_in = event->data; */
         break;
     
     case MQTT_EVENT_ERROR:
