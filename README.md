@@ -6,9 +6,6 @@ Este componente fue realizado en el framework ESP-IDF para Visual Studio Code.
 
 ## Creacion de certificados
 
-Utilizar estos enlaces
-https://www.emqx.com/en/blog/enable-two-way-ssl-for-emqx
-
 ### Servidor
 
 * sudo openssl genrsa -out ca.key 2048
@@ -44,50 +41,24 @@ DNS.1 = 192.168.0.70
 * sudo openssl req -new -key client.key -out client.csr -subj "/C=AR/ST=bsas/L=berazategui/O=ceiot/CN=client"
 * sudo openssl x509 -req -days 3650 -in client.csr -CA ca.pem -CAkey ca.key -CAcreateserial -out client.pem
 
+### Siguientes pasos
 
+Es importante aclarar que los certificados deben crearse en el servidor y guardarlos de forma segura, ya que sin estos no será posible conectarse al broker MQTT. En este caso el servidor está implementado en una Raspberry Pi400, como se aclara en el readme del componente web.
 
-## How to use example
+Una vez creados los certificados, se deben copiar en la carpeta *main* de este proyecto y adecuar las siguientes líneas de la librería *mqtt_funcs.c*:
+extern const uint8_t client_cert_pem_start[] asm("_binary_client_pem_start");
+extern const uint8_t client_cert_pem_end[] asm("_binary_client_pem_end");
+extern const uint8_t client_key_pem_start[] asm("_binary_client_key_start");
+extern const uint8_t client_key_pem_end[] asm("_binary_client_key_end");
+extern const uint8_t server_cert_pem_start[] asm("_binary_ca_pem_start");
+extern const uint8_t server_cert_pem_end[] asm("_binary_ca_pem_end");
 
-### Hardware Required
+Además se debe modificar el archivo *CMakeLists.txt* ubicado en la carpeta raíz de este componente, agregando los archivos de las claves al final del mismo. Aquí se ve el ejemplo:
+target_add_binary_data(${CMAKE_PROJECT_NAME}.elf "main/client.pem" TEXT)
+target_add_binary_data(${CMAKE_PROJECT_NAME}.elf "main/client.key" TEXT)
+target_add_binary_data(${CMAKE_PROJECT_NAME}.elf "main/ca.pem" TEXT)
 
-This example can be executed on any ESP32 board, the only required interface is WiFi and connection to internet.
+- Enlaces útiles: https://www.emqx.com/en/blog/enable-two-way-ssl-for-emqx
 
-### Configure the project
-
-* Open the project configuration menu (`idf.py menuconfig`)
-* Configure Wi-Fi or Ethernet under "Example Connection Configuration" menu. See "Establishing Wi-Fi or Ethernet Connection" section in [examples/protocols/README.md](../../README.md) for more details.
-* When using Make build system, set `Default serial port` under `Serial flasher config`.
-
-* Generate your client keys and certificate
-
-Navigate to the main directory
-
-```
-cd main
-```
-
-Generate a client key and a CSR. When you are generating the CSR, do not use the default values. At a minimum, the CSR must include the Country, Organisation and Common Name fields.
-
-```
-openssl genrsa -out client.key
-openssl req -out client.csr -key client.key -new
-```
-
-Paste the generated CSR in the [Mosquitto test certificate signer](https://test.mosquitto.org/ssl/index.php), click Submit and copy the downloaded `client.crt` in the `main` directory.
-
-Please note, that the supplied files `client.crt` and `client.key` in the `main` directory are only placeholders for your client certificate and key (i.e. the example "as is" would compile but would not connect to the broker)
-
-The server certificate `mosquitto.org.crt` can be downloaded in pem format from [mosquitto.org.crt](https://test.mosquitto.org/ssl/mosquitto.org.crt).
-
-### Build and Flash
-
-Build the project and flash it to the board, then run monitor tool to view serial output:
-
-```
-idf.py -p PORT flash monitor
-```
-
-(To exit the serial monitor, type ``Ctrl-]``.)
-
-See the Getting Started Guide for full steps to configure and use ESP-IDF to build projects.
+## Configurar el proyecto
 
