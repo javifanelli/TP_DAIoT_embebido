@@ -4,10 +4,12 @@ bmp280_t devt;
 
 void start_bmp (void)
 {
+    ESP_LOGI(TAG, "Iniciando BMP280");
     bmp280_init_default_params(&params);
     memset(&devt, 0, sizeof(bmp280_t));
     ESP_ERROR_CHECK(bmp280_init_desc(&devt, BMP280_I2C_ADDRESS_0, 0, SDA_GPIO, SCL_GPIO));
     ESP_ERROR_CHECK(bmp280_init(&devt, &params));
+    ESP_LOGI(TAG, "BMP280 iniciado");
 }
 
 void get_temp(void)

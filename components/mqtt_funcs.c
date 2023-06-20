@@ -148,13 +148,11 @@ void mqtt_send_info(void *pvParameter)
         strcat(buffer_mqtt, "\"\n}");
         esp_mqtt_client_publish(client, TOPIC, buffer_mqtt, 0, 0, 0);
         vTaskDelay(1000 * seconds / portTICK_PERIOD_MS);
-        // Incrementar temperatura
         temperatura += incremento;
-        // Verificar límites de temperatura
         if (temperatura >= 30) {
-            incremento = -1;  // Cambiar dirección de incremento
+            incremento = -1;
         } else if (temperatura <= 20) {
-            incremento = 1;  // Cambiar dirección de incremento
+            incremento = 1;
         }
     }
     vTaskDelete(NULL);
