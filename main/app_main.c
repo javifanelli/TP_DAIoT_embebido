@@ -8,20 +8,19 @@
 #include "esp_event.h"
 #include "esp_netif.h"
 #include "protocol_examples_common.h"
-
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "freertos/semphr.h"
 #include "freertos/queue.h"
-
 #include "lwip/sockets.h"
 #include "lwip/dns.h"
 #include "lwip/netdb.h"
-
 #include "esp_log.h"
 #include "mqtt_client.h"
 #include "../components/sntp_time.h"
 #include "../components/mqtt_funcs.c"
+#include "../components/bmp280/bmp280.h"
+#include "../components/temp/temp.h"
 
 bool time_sinc_ok = false;
 
@@ -45,7 +44,7 @@ void app_main(void)
     
 
     mqtt_app_start();
-    
+    start_bmp();
     xTaskCreate(mqtt_send_info, "mqtt_send_info", 4096 * 8, NULL, 3, NULL);
     
 }

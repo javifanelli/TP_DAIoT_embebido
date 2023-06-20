@@ -69,3 +69,5 @@
 /home/javi/Proyecto/ssl_mutual_auth/build/esp-idf/wifi_provisioning/libwifi_provisioning.a
 /home/javi/Proyecto/ssl_mutual_auth/build/esp-idf/main/libmain.a
 /home/javi/Proyecto/ssl_mutual_auth/build/esp-idf/protocol_examples_common/libprotocol_examples_common.a
+/home/javi/Proyecto/ssl_mutual_auth/build/esp-idf/i2cdev/libi2cdev.a
+/home/javi/Proyecto/ssl_mutual_auth/build/esp-idf/bmp280/libbmp280.a

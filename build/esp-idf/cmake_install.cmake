@@ -121,6 +121,9 @@ if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   include("/home/javi/Proyecto/ssl_mutual_auth/build/esp-idf/wifi_provisioning/cmake_install.cmake")
   include("/home/javi/Proyecto/ssl_mutual_auth/build/esp-idf/main/cmake_install.cmake")
   include("/home/javi/Proyecto/ssl_mutual_auth/build/esp-idf/protocol_examples_common/cmake_install.cmake")
+  include("/home/javi/Proyecto/ssl_mutual_auth/build/esp-idf/esp_idf_lib_helpers/cmake_install.cmake")
+  include("/home/javi/Proyecto/ssl_mutual_auth/build/esp-idf/i2cdev/cmake_install.cmake")
+  include("/home/javi/Proyecto/ssl_mutual_auth/build/esp-idf/bmp280/cmake_install.cmake")
 
 endif()
 
