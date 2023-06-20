@@ -9,7 +9,7 @@ extern const uint8_t server_cert_pem_end[] asm("_binary_ca_pem_end");
 #define BROKER_URI "mqtts://192.168.0.70"
 #define seconds 30 // Segundos de delay en actualizar temperatura
 
-static const char *ID= "3";
+static const char *ID= "2";
 static char MAC[18];
 static int8_t rssi = 0;
 static char buffer_mqtt[150];
