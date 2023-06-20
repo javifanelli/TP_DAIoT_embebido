@@ -15,11 +15,6 @@
 
 static const char *TAG = "SNTP Module";
 
-
-/* Variable holding number of times ESP32 restarted since first boot.
- * It is placed into RTC memory using RTC_DATA_ATTR and
- * maintains its value when ESP32 wakes from deep sleep.
- */
 RTC_DATA_ATTR static int boot_count = 0;
 extern bool time_sinc_ok;
 char formatted_time[20];
@@ -44,23 +39,17 @@ void obtain_time(void)
     ESP_LOGI(TAG, "Obtaining time...");
     time_t now = 0;
     struct tm timeinfo = { 0 };
-
     // Obtiene la hora actual
     time(&now);
     localtime_r(&now, &timeinfo);
-
     // Formatea la hora en el formato deseado (YYYY-MM-DD HH:MM:SS)
     strftime(formatted_time, sizeof(formatted_time), "%Y-%m-%d %H:%M:%S", &timeinfo);
-
     ESP_LOGI(TAG, "Obtained time: %s", formatted_time);
 }
-
 
 void initialize_sntp(void)
 {
     ESP_LOGI(TAG, "Initializing SNTP");
-    setenv("TZ", "GMT+3", 1);
-    tzset();
     sntp_setoperatingmode(SNTP_OPMODE_POLL);
     sntp_setservername(0, "pool.ntp.org");
     sntp_set_time_sync_notification_cb(time_sync_notification_cb);

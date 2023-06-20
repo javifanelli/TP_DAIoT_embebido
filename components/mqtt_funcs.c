@@ -13,7 +13,7 @@ static char MAC[18];
 static int8_t rssi = 0;
 static char buffer_mqtt[150];
 static char buffer_in[150];
-static const char *TAG = "Cocina";
+static const char *TAG = "sensor";
 static esp_mqtt_client_handle_t client;
 static char TOPIC[50];
 bool mqtt_client_connected = false;
@@ -133,7 +133,7 @@ void mqtt_send_info(void *pvParameter)
         strcat(buffer_mqtt, "\"time\": \"");
         strcat(buffer_mqtt, formatted_time);
         strcat(buffer_mqtt, "\",\n");
-        strcat(buffer_mqtt, "\"valor\": 23.5,\n");
+        strcat(buffer_mqtt, "\"valor\": 23,\n");
         strcat(buffer_mqtt, "\"MAC\": \"");
         strcat(buffer_mqtt, MAC);
         strcat(buffer_mqtt, "\"\n}");
