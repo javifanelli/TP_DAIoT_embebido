@@ -153,7 +153,7 @@ void mqtt_send_info(void *pvParameter)
         // Verificar límites de temperatura
         if (temperatura >= 30) {
             incremento = -1;  // Cambiar dirección de incremento
-        } else if (temperatura < 20) {
+        } else if (temperatura <= 20) {
             incremento = 1;  // Cambiar dirección de incremento
         }
     }
