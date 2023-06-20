@@ -28,7 +28,7 @@
 /home/javi/Proyecto/ssl_mutual_auth/build/esp-idf/heap/libheap.a
 /home/javi/Proyecto/ssl_mutual_auth/build/esp-idf/soc/libsoc.a
 /home/javi/Proyecto/ssl_mutual_auth/build/esp-idf/esp_hw_support/libesp_hw_support.a
-/home/javi/Proyecto/ssl_mutual_auth/build/esp-idf/xtensa/libxtensa.a
+/home/javi/Proyecto/ssl_mutual_auth/build/esp-idf/riscv/libriscv.a
 /home/javi/Proyecto/ssl_mutual_auth/build/esp-idf/esp_common/libesp_common.a
 /home/javi/Proyecto/ssl_mutual_auth/build/esp-idf/esp_timer/libesp_timer.a
 /home/javi/Proyecto/ssl_mutual_auth/build/esp-idf/freertos/libfreertos.a
@@ -65,9 +65,7 @@
 /home/javi/Proyecto/ssl_mutual_auth/build/esp-idf/libsodium/liblibsodium.a
 /home/javi/Proyecto/ssl_mutual_auth/build/esp-idf/mqtt/libmqtt.a
 /home/javi/Proyecto/ssl_mutual_auth/build/esp-idf/openssl/libopenssl.a
-/home/javi/Proyecto/ssl_mutual_auth/build/esp-idf/perfmon/libperfmon.a
 /home/javi/Proyecto/ssl_mutual_auth/build/esp-idf/spiffs/libspiffs.a
-/home/javi/Proyecto/ssl_mutual_auth/build/esp-idf/ulp/libulp.a
 /home/javi/Proyecto/ssl_mutual_auth/build/esp-idf/wifi_provisioning/libwifi_provisioning.a
 /home/javi/Proyecto/ssl_mutual_auth/build/esp-idf/main/libmain.a
 /home/javi/Proyecto/ssl_mutual_auth/build/esp-idf/protocol_examples_common/libprotocol_examples_common.a

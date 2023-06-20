@@ -9,10 +9,10 @@ extern const uint8_t server_cert_pem_end[] asm("_binary_ca_pem_end");
 #define BROKER_URI "mqtts://192.168.0.70"
 #define seconds 30 // Segundos de delay en actualizar temperatura
 
+static const char *ID ="1";
 static char MAC[18];
 static int8_t rssi = 0;
 static char buffer_mqtt[150];
-static char buffer_in[150];
 static const char *TAG = "sensor";
 static esp_mqtt_client_handle_t client;
 static char TOPIC[50];
@@ -113,6 +113,9 @@ void mqtt_send_info(void *pvParameter)
     esp_wifi_sta_get_ap_info(&ap_info);
     int secs = 0;
     char ch_secs[4];
+    int temperatura = 20;  // Temperatura inicial
+    int incremento = 1;  // Incremento de temperatura por ciclo
+
     while (1) {
         struct timeval tv;
         gettimeofday(&tv, NULL);
@@ -126,19 +129,33 @@ void mqtt_send_info(void *pvParameter)
         rssi = ap_info.rssi;
         sprintf(RSSI_CHAR, "%d", rssi);
         ESP_LOGI(TAG, "RSSI: %d ", ap_info.rssi);
-        strcat(buffer_mqtt, "{\n\"ID\": 3,\n");
+        strcat(buffer_mqtt, "{\n\"ID\": ");
+        strcat(buffer_mqtt, ID);
+        strcat(buffer_mqtt, ",\n");
         strcat(buffer_mqtt, "\"RSSI\": ");
         strcat(buffer_mqtt, RSSI_CHAR);
         strcat(buffer_mqtt, ",\n");
         strcat(buffer_mqtt, "\"time\": \"");
         strcat(buffer_mqtt, formatted_time);
         strcat(buffer_mqtt, "\",\n");
-        strcat(buffer_mqtt, "\"valor\": 23,\n");
+        strcat(buffer_mqtt, "\"valor\": ");
+        char temperatura_str[10];
+        sprintf(temperatura_str, "%d", temperatura);
+        strcat(buffer_mqtt, temperatura_str);
+        strcat(buffer_mqtt, ",\n");
         strcat(buffer_mqtt, "\"MAC\": \"");
         strcat(buffer_mqtt, MAC);
         strcat(buffer_mqtt, "\"\n}");
         esp_mqtt_client_publish(client, TOPIC, buffer_mqtt, 0, 0, 0);
         vTaskDelay(1000 * seconds / portTICK_PERIOD_MS);
+        // Incrementar temperatura
+        temperatura += incremento;
+        // Verificar límites de temperatura
+        if (temperatura >= 30) {
+            incremento = -1;  // Cambiar dirección de incremento
+        } else if (temperatura < 20) {
+            incremento = 1;  // Cambiar dirección de incremento
+        }
     }
     vTaskDelete(NULL);
 }

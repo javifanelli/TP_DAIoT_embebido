@@ -34,12 +34,12 @@ endif()
 
 # Set default install directory permissions.
 if(NOT DEFINED CMAKE_OBJDUMP)
-  set(CMAKE_OBJDUMP "/home/javi/esp4/tools/xtensa-esp32-elf/esp-2021r2-patch5-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-objdump")
+  set(CMAKE_OBJDUMP "/home/javi/esp4/tools/riscv32-esp-elf/esp-2021r2-patch5-8.4.0/riscv32-esp-elf/bin/riscv32-esp-elf-objdump")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/home/javi/Proyecto/ssl_mutual_auth/build/bootloader/esp-idf/soc/esp32/cmake_install.cmake")
+  include("/home/javi/Proyecto/ssl_mutual_auth/build/bootloader/esp-idf/soc/esp32c3/cmake_install.cmake")
 
 endif()
 
