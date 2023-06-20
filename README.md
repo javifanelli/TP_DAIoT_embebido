@@ -1,19 +1,13 @@
 # Software embebido para ESP para el trabajo práctico de la materia DAIoT
 
-El siguiente software es
-# ESP-MQTT SSL Sample application (mutual authentication)
+El siguiente proyecto es el software embebido de los ESP32 para la materia Desarrollo de aplicaciones para IoT. El proyecto consta de 2 componentes de software, el presente para los nodos y el ubicado [aquí](https://github.com/javifanelli/web-proyecto) para los componentes web (frontend y backend).
 
-(See the README.md file in the upper level 'examples' directory for more information about examples.)
+Este componente fue realizado en el framework ESP-IDF para Visual Studio Code.
 
-This example connects to the broker test.mosquitto.org using ssl transport with client certificate and as a demonstration subscribes/unsubscribes and send a message on certain topic.
-(Please note that the public broker is maintained by the community so may not be always available, for details please visit http://test.mosquitto.org)
-
-It uses ESP-MQTT library which implements mqtt client to connect to mqtt broker.
+## Creacion de certificados
 
 Utilizar estos enlaces
 https://www.emqx.com/en/blog/enable-two-way-ssl-for-emqx
-
-## Creacion de certificados
 
 ### Servidor
 

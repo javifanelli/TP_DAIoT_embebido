@@ -20,8 +20,10 @@
 
 #include "esp_log.h"
 #include "mqtt_client.h"
-#include "../components/mqtt_funcs.c"
 #include "../components/sntp_time.h"
+#include "../components/mqtt_funcs.c"
+
+bool time_sinc_ok = false;
 
 void app_main(void)
 {
@@ -38,7 +40,9 @@ void app_main(void)
     ESP_ERROR_CHECK(example_connect());
     
     initialize_sntp();
-    /* while (!time_sinc_ok) vTaskDelay(100 * 1); */
+    while (!time_sinc_ok) vTaskDelay(100 * 1);
+    obtain_time();
+    
 
     mqtt_app_start();
     

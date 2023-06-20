@@ -5,6 +5,7 @@ extern const uint8_t client_key_pem_end[] asm("_binary_client_key_end");
 extern const uint8_t server_cert_pem_start[] asm("_binary_ca_pem_start");
 extern const uint8_t server_cert_pem_end[] asm("_binary_ca_pem_end");
 
+#include "sntp_time.h"
 #define BROKER_URI "mqtts://192.168.0.70"
 #define seconds 30 // Segundos de delay en actualizar temperatura
 
@@ -18,7 +19,7 @@ static char TOPIC[50];
 bool mqtt_client_connected = false;
 
 void build_topic(void) {
-    sprintf(TOPIC, "/home/%s/data", TAG);
+    sprintf(TOPIC, "/home/temperatura/data");
 }
 
 static void log_error_if_nonzero(const char *message, int error_code)
@@ -103,19 +104,23 @@ static void mqtt_app_start(void)
     esp_mqtt_client_start(client);
 }
 
-void mqtt_send_info (void * parm)
-{    
+void mqtt_send_info(void *pvParameter)
+{
     wifi_ap_record_t ap_info;
     buffer_mqtt[0] = 0;
     char RSSI_CHAR[10];
-    RSSI_CHAR[0]=0;
+    RSSI_CHAR[0] = 0;
     esp_wifi_sta_get_ap_info(&ap_info);
-    int secs=0;
+    int secs = 0;
     char ch_secs[4];
-    while(1) {
-        if (secs==60){
-            secs=0;
-        }
+    while (1) {
+        struct timeval tv;
+        gettimeofday(&tv, NULL);
+        settimeofday(&tv, NULL);
+        struct tm *timeinfo;
+        time_t now = tv.tv_sec;
+        timeinfo = localtime(&now);
+        strftime(formatted_time, sizeof(formatted_time), "%Y-%m-%d %H:%M:%S", timeinfo);
         memset(buffer_mqtt, 0, sizeof(buffer_mqtt));
         sprintf(ch_secs, "%02d", secs);
         rssi = ap_info.rssi;
@@ -125,14 +130,15 @@ void mqtt_send_info (void * parm)
         strcat(buffer_mqtt, "\"RSSI\": ");
         strcat(buffer_mqtt, RSSI_CHAR);
         strcat(buffer_mqtt, ",\n");
-        strcat(buffer_mqtt, "\"time\": \"2023-04-20 16:00:00\",\n");
+        strcat(buffer_mqtt, "\"time\": \"");
+        strcat(buffer_mqtt, formatted_time);
+        strcat(buffer_mqtt, "\",\n");
         strcat(buffer_mqtt, "\"valor\": 23.5,\n");
         strcat(buffer_mqtt, "\"MAC\": \"");
         strcat(buffer_mqtt, MAC);
         strcat(buffer_mqtt, "\"\n}");
         esp_mqtt_client_publish(client, TOPIC, buffer_mqtt, 0, 0, 0);
         vTaskDelay(1000 * seconds / portTICK_PERIOD_MS);
-        secs=secs+seconds;
     }
     vTaskDelete(NULL);
 }

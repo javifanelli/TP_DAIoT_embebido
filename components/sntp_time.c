@@ -15,15 +15,14 @@
 
 static const char *TAG = "SNTP Module";
 
+
 /* Variable holding number of times ESP32 restarted since first boot.
  * It is placed into RTC memory using RTC_DATA_ATTR and
  * maintains its value when ESP32 wakes from deep sleep.
  */
 RTC_DATA_ATTR static int boot_count = 0;
-
-bool time_sinc_ok = false;
-
-static void obtain_time(void);
+extern bool time_sinc_ok;
+char formatted_time[20];
 
 #ifdef CONFIG_SNTP_TIME_SYNC_METHOD_CUSTOM
 void sntp_sync_time(struct timeval *tv)
@@ -40,33 +39,35 @@ void time_sync_notification_cb(struct timeval *tv)
     time_sinc_ok = true;
 }
 
-
-static void obtain_time(void)
+void obtain_time(void)
 {
-    ESP_ERROR_CHECK( nvs_flash_init() );
-    ESP_ERROR_CHECK(esp_netif_init());
-    ESP_ERROR_CHECK( esp_event_loop_create_default() );
-
-    initialize_sntp();
-
-    // wait for time to be set
+    ESP_LOGI(TAG, "Obtaining time...");
     time_t now = 0;
     struct tm timeinfo = { 0 };
-    int retry = 0;
-    const int retry_count = 10;
-    while (sntp_get_sync_status() == SNTP_SYNC_STATUS_RESET && ++retry < retry_count) {
-        ESP_LOGI(TAG, "Waiting for system time to be set... (%d/%d)", retry, retry_count);
-        vTaskDelay(2000 / portTICK_PERIOD_MS);
-    }
+
+    // Obtiene la hora actual
     time(&now);
     localtime_r(&now, &timeinfo);
+
+    // Formatea la hora en el formato deseado (YYYY-MM-DD HH:MM:SS)
+    strftime(formatted_time, sizeof(formatted_time), "%Y-%m-%d %H:%M:%S", &timeinfo);
+
+    ESP_LOGI(TAG, "Obtained time: %s", formatted_time);
 }
+
 
 void initialize_sntp(void)
 {
     ESP_LOGI(TAG, "Initializing SNTP");
+    setenv("TZ", "GMT+3", 1);
+    tzset();
     sntp_setoperatingmode(SNTP_OPMODE_POLL);
     sntp_setservername(0, "pool.ntp.org");
     sntp_set_time_sync_notification_cb(time_sync_notification_cb);
     sntp_init();
+    // Espera hasta que se complete la sincronización de tiempo
+    while (sntp_get_sync_status() == SNTP_SYNC_STATUS_RESET) {
+        vTaskDelay(100 / portTICK_PERIOD_MS);
+    }
+    ESP_LOGI(TAG, "Time synchronized");
 }
