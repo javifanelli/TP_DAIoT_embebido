@@ -1,8 +1,8 @@
-# Software embebido para ESP para el trabajo práctico de la materia DAIoT
+# Software embebido para ESP para el trabajo práctico de la materia DAIoT (sensores dummies)
 
 El siguiente proyecto es el software embebido de los ESP32 para la materia Desarrollo de aplicaciones para IoT. El proyecto consta de 2 componentes de software, el presente para los nodos y el ubicado [aquí](https://github.com/javifanelli/web-proyecto) para los componentes web (frontend y backend).
 
-Este componente fue realizado en el framework ESP-IDF para Visual Studio Code.
+Este componente fue realizado en el framework ESP-IDF para Visual Studio Code. Esta rama tiene el código de los sensores que reportan temperatura hardcodeada que aumenta y disminuye con cada ciclo de 30 segundos. Para ver el códiog del sensor que reporta temperatura real dirigirse a la rama *main* de este proyecto.
 
 ## Creacion de certificados
 
