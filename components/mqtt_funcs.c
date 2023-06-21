@@ -114,6 +114,7 @@ void mqtt_send_info(void *pvParameter)
     int secs = 0;
     char ch_secs[4];
     struct tm *timeinfo;
+    char temperatura_str[10];
     bmp280_params_t params;
     bmp280_init_default_params(&params);
     bmp280_t dev;
@@ -126,13 +127,12 @@ void mqtt_send_info(void *pvParameter)
     ESP_LOGI(TAG, "BMP280: found %s\n", bme280p ? "BME280" : "BMP280");
 
     float pressure, temperature, humidity;
-    
+    int temperatura_ent;
     while (1) {
         if (bmp280_read_float(&dev, &temperature, &pressure, &humidity) != ESP_OK) {
             ESP_LOGI(TAG, "Temperature/pressure reading failed\n");
         } else {
             ESP_LOGI(TAG, "Pressure: %.2f hPa, Temperature: %.2f C", pressure/100, temperature);
-            ESP_LOGI(TAG,", Humidity: %.2f\n", humidity);
             }
         struct timeval tv;
         gettimeofday(&tv, NULL);
@@ -155,8 +155,8 @@ void mqtt_send_info(void *pvParameter)
         strcat(buffer_mqtt, formatted_time);
         strcat(buffer_mqtt, "\",\n");
         strcat(buffer_mqtt, "\"valor\": ");
-        char temperatura_str[10];
-        sprintf(temperatura_str, "%d", temperature);
+        temperatura_ent = truncf(temperature);
+        sprintf(temperatura_str, "%d", temperatura_ent);
         strcat(buffer_mqtt, temperatura_str);
         strcat(buffer_mqtt, ",\n");
         strcat(buffer_mqtt, "\"MAC\": \"");
