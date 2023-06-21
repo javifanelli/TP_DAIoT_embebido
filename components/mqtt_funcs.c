@@ -113,14 +113,30 @@ void mqtt_send_info(void *pvParameter)
     esp_wifi_sta_get_ap_info(&ap_info);
     int secs = 0;
     char ch_secs[4];
-    int temperatura = 20;  // Temperatura inicial
-    int incremento = 1;  // Incremento de temperatura por ciclo
+    struct tm *timeinfo;
+    bmp280_params_t params;
+    bmp280_init_default_params(&params);
+    bmp280_t dev;
+    memset(&dev, 0, sizeof(bmp280_t));
 
+    ESP_ERROR_CHECK(bmp280_init_desc(&dev, BMP280_I2C_ADDRESS_0, 0, SDA_GPIO, SCL_GPIO));
+    ESP_ERROR_CHECK(bmp280_init(&dev, &params));
+
+    bool bme280p = dev.id == BME280_CHIP_ID;
+    ESP_LOGI(TAG, "BMP280: found %s\n", bme280p ? "BME280" : "BMP280");
+
+    float pressure, temperature, humidity;
+    
     while (1) {
+        if (bmp280_read_float(&dev, &temperature, &pressure, &humidity) != ESP_OK) {
+            ESP_LOGI(TAG, "Temperature/pressure reading failed\n");
+        } else {
+            ESP_LOGI(TAG, "Pressure: %.2f hPa, Temperature: %.2f C", pressure/100, temperature);
+            ESP_LOGI(TAG,", Humidity: %.2f\n", humidity);
+            }
         struct timeval tv;
         gettimeofday(&tv, NULL);
         settimeofday(&tv, NULL);
-        struct tm *timeinfo;
         time_t now = tv.tv_sec;
         timeinfo = localtime(&now);
         strftime(formatted_time, sizeof(formatted_time), "%Y-%m-%d %H:%M:%S", timeinfo);
@@ -140,20 +156,15 @@ void mqtt_send_info(void *pvParameter)
         strcat(buffer_mqtt, "\",\n");
         strcat(buffer_mqtt, "\"valor\": ");
         char temperatura_str[10];
-        sprintf(temperatura_str, "%d", temperatura);
+        sprintf(temperatura_str, "%d", temperature);
         strcat(buffer_mqtt, temperatura_str);
         strcat(buffer_mqtt, ",\n");
         strcat(buffer_mqtt, "\"MAC\": \"");
         strcat(buffer_mqtt, MAC);
         strcat(buffer_mqtt, "\"\n}");
         esp_mqtt_client_publish(client, TOPIC, buffer_mqtt, 0, 0, 0);
-        vTaskDelay(1000 * seconds / portTICK_PERIOD_MS);
-        temperatura += incremento;
-        if (temperatura >= 30) {
-            incremento = -1;
-        } else if (temperatura <= 20) {
-            incremento = 1;
-        }
+        /* vTaskDelay(1000 * seconds / portTICK_PERIOD_MS); */
+
     }
     vTaskDelete(NULL);
 }

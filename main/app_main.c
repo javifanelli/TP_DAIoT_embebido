@@ -18,9 +18,10 @@
 #include "esp_log.h"
 #include "mqtt_client.h"
 #include "../components/sntp_time.h"
-#include "../components/mqtt_funcs.c"
 #include "../components/bmp280/bmp280.h"
-#include "../components/temp/temp.h"
+#include "../components/mqtt_funcs.c"
+
+/* #include "../components/temp/temp.h" */
 
 bool time_sinc_ok = false;
 
@@ -44,7 +45,7 @@ void app_main(void)
     
 
     mqtt_app_start();
-    start_bmp();
-    xTaskCreate(mqtt_send_info, "mqtt_send_info", 4096 * 8, NULL, 3, NULL);
+
+    xTaskCreate(mqtt_send_info, "mqtt_send_info", 4096 * 8, NULL, 5, NULL);
     
 }
