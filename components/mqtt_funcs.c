@@ -163,7 +163,7 @@ void mqtt_send_info(void *pvParameter)
         strcat(buffer_mqtt, MAC);
         strcat(buffer_mqtt, "\"\n}");
         esp_mqtt_client_publish(client, TOPIC, buffer_mqtt, 0, 0, 0);
-        /* vTaskDelay(1000 * seconds / portTICK_PERIOD_MS); */
+        vTaskDelay(1000 * seconds / portTICK_PERIOD_MS);
 
     }
     vTaskDelete(NULL);
